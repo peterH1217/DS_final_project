@@ -68,6 +68,11 @@ def preprocess_data(raw: mne.io.Raw):
     # 3. Filter
     raw.filter(l_freq=config.LOW_CUTOFF, h_freq=config.HIGH_CUTOFF, method='iir', verbose=False)
     
+    # 4. Normalization
+    # We will apply "Z-score normalization" (subtract mean, divide by std) to each channel independently.
+    logger.info("Step 4: Applying Channel-wise Normalization (Z-score)...")
+    raw.apply_function(lambda x: (x - x.mean()) / x.std())
+    
     return raw
 
 def load_and_process_subject(subject_id: int):
