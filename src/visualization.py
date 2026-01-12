@@ -1,51 +1,56 @@
 import matplotlib.pyplot as plt
-import mne
+import seaborn as sns
 import numpy as np
-import os
-from src import config
+import mne
+import logging
 
-def plot_power_spectrum(raw: mne.io.Raw, title="Power Spectrum Density (PSD)"):
-    """
-    Generates a PSD plot to check if filtering (4-38Hz) worked.
-    """
-    # MNE plot_psd automatically picks good channels
-    fig = raw.compute_psd(fmax=60).plot(show=False)
-    
-    save_path = os.path.join(config.RESULTS_DIR, "psd_plot.png")
-    os.makedirs(config.RESULTS_DIR, exist_ok=True)
-    plt.savefig(save_path)
-    print(f"Saved PSD plot to {save_path}")
-    plt.close()
+# Configure logging
+logger = logging.getLogger(__name__)
 
-def plot_raw_segment(raw: mne.io.Raw, duration=5):
+def plot_psd(raw, save_path="results/psd_plot.png"):
     """
-    Plots the first 5 seconds of EEG data.
+    Plots the Power Spectral Density (PSD) of the raw data.
     """
-    # CORRECTED CHANNEL NAMES (No 'EEG-' prefix)
-    picks = ['C3', 'Cz', 'C4']
+    logger.info("Plotting power spectral density (dB=True).")
+    fig = raw.compute_psd(fmax=50).plot(show=False)
     
-    # Check if these channels actually exist, otherwise pick the first 3
-    available_channels = raw.ch_names
-    final_picks = [ch for ch in picks if ch in available_channels]
+    # Save the figure
+    fig.savefig(save_path)
+    logger.info(f"Saved PSD plot to {save_path}")
+    plt.close(fig)
+
+def plot_raw_trace(raw, save_path="results/raw_eeg_trace.png", duration=5, start_time=0):
+    """
+    Plots a few seconds of raw EEG traces for Motor channels (C3, Cz, C4).
+    """
+    logger.info(f"Plotting first {duration} seconds of raw EEG...")
     
-    if not final_picks:
-        print(f"Warning: Preferred channels {picks} not found. Using first 3 channels.")
-        final_picks = available_channels[:3]
+    # Select specific motor cortex channels to make the plot readable
+    # (We wrap in try/except in case channel names differ slightly between datasets)
+    possible_channels = ['C3', 'Cz', 'C4']
+    channels_to_plot = [ch for ch in possible_channels if ch in raw.ch_names]
     
-    data, times = raw.get_data(picks=final_picks, start=0, stop=int(duration * config.SAMPLING_RATE), return_times=True)
+    if not channels_to_plot:
+        logger.warning("Could not find C3, Cz, or C4. Plotting first 3 channels instead.")
+        channels_to_plot = raw.ch_names[:3]
+
+    # Extract data
+    data, times = raw.get_data(picks=channels_to_plot, start=int(start_time * raw.info['sfreq']), 
+                               stop=int((start_time + duration) * raw.info['sfreq']), return_times=True)
     
+    # Plotting
     plt.figure(figsize=(10, 6))
-    for i, channel_data in enumerate(data):
-        # Offset each channel so they don't overlap
-        plt.plot(times, channel_data + (i * 5e-5), label=final_picks[i]) # 5e-5 is a scaling factor for visibility
+    sns.set_style("whitegrid")
+    
+    for i, channel_name in enumerate(channels_to_plot):
+        plt.plot(times, data[i], label=channel_name)
         
     plt.title(f"First {duration} seconds of Motor Cortex EEG")
     plt.xlabel("Time (s)")
-    plt.ylabel("Amplitude (Volts)")
-    plt.legend()
+    plt.ylabel("Amplitude (Normalized)")
+    plt.legend(loc="upper right")
     
-    save_path = os.path.join(config.RESULTS_DIR, "raw_eeg_trace.png")
-    os.makedirs(config.RESULTS_DIR, exist_ok=True)
+    # Save
     plt.savefig(save_path)
-    print(f"Saved Raw EEG plot to {save_path}")
+    logger.info(f"Saved Raw EEG plot to {save_path}")
     plt.close()

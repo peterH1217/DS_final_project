@@ -1,23 +1,18 @@
 # src/config.py
 import os
 
-# --- Paths ---
-# We don't need a hardcoded path for MOABB, it handles downloads automatically.
-# But we can define where we want to save logs or results.
+# Paths
 LOG_DIR = "logs"
 RESULTS_DIR = "results"
 
-# --- Data Parameters (Dataset 2a) ---
-SAMPLING_RATE = 250  # Hz
-LOW_CUTOFF = 4.0     # Hz (High-pass filter)
-HIGH_CUTOFF = 38.0   # Hz (Low-pass filter)
+# Data Parameters
+SAMPLING_RATE = 250  # Hz (Matches Paper)
 
-# The dataset has 22 EEG channels. We list them to be explicit.
-EEG_CHANNELS = [
-    'Fz', 'FC3', 'FC1', 'FCz', 'FC2', 'FC4', 'C5', 
-    'C3', 'C1', 'Cz', 'C2', 'C4', 'C6', 'CP3', 
-    'CP1', 'CPz', 'CP2', 'CP4', 'P1', 'Pz', 'P2', 'POz'
-]
+# Filtering strategy:
+# The paper compares "0-f_end" and "4-f_end". We use 4.0 Hz to remove eye artifacts (EOG).
+LOW_CUTOFF = 4.0     # Hz 
 
-# MOABB Dataset ID for BCI Competition IV 2a
-DATASET_NAME = "BNCI2014001"
+# The paper analyzes up to 125 Hz for the High Gamma Dataset.
+# We set this to None (or 120) so we don't kill the Gamma band features.
+HIGH_CUTOFF = None   # None means "Do not filter high freqs" (or use 120.0)
+

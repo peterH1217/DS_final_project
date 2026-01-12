@@ -1,24 +1,46 @@
 import logging
-import sys
-from src import data_loader, visualization
+from src.data_loader import load_and_process_subject
+from src.visualization import plot_psd, plot_raw_trace
 
-# Configure Logging
-logging.basicConfig(level=logging.INFO, stream=sys.stdout, force=True)
-logger = logging.getLogger("test_script")
+# Configuring logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-try:
-    logger.info(">>> STEP 1: Loading Data...")
-    raw_train, raw_test = data_loader.load_and_process_subject(1)
+def main():
+    logger.info(">>> STEP 1: Starting Multi-Dataset Pipeline...")
     
-    logger.info(">>> STEP 2: Generating Visualizations for Presentation...")
+    # 1. Defining the list of datasets we want to process
+    # 'BNCI2014_001' = BCI Competition IV 2a
+    # 'Schirrmeister2017' = High Gamma Dataset (HGD)
+    datasets_to_run = ['BNCI2014_001', 'Schirrmeister2017']
     
-    # Plot 1: Did the filter work? (Should see a drop off after 38Hz)
-    visualization.plot_power_spectrum(raw_train)
-    
-    # Plot 2: What does the signal look like?
-    visualization.plot_raw_segment(raw_train)
-    
-    print("\n>>> SUCCESS! Check the 'results' folder for your images!")
+    for dataset_name in datasets_to_run:
+        logger.info(f"\n--- PROCESSING DATASET: {dataset_name} ---")
+        
+        try:
+            # 2. Loading Data (Dynamic Switch)
+            raw_train, raw_test = load_and_process_subject(1, dataset_name=dataset_name)
 
-except Exception as e:
-    logger.exception("Something went wrong!")
+            # 3. Generating Visualizations (with unique filenames!)
+            logger.info(f"Generating visualizations for {dataset_name}...")
+            
+            # We add the dataset_name to the filename so they don't overwrite each other
+            plot_psd(
+                raw_train, 
+                save_path=f"results/psd_plot_{dataset_name}.png"
+            )
+            
+            plot_raw_trace(
+                raw_train, 
+                save_path=f"results/raw_eeg_trace_{dataset_name}.png"
+            )
+            
+            logger.info(f"Successfully finished {dataset_name}. Check results folder!")
+
+        except Exception as e:
+            logger.error(f"Failed to process {dataset_name}: {e}")
+
+    logger.info("\n>>> Pipeline complete: we have results for both datasets.")
+
+if __name__ == '__main__':
+    main()
