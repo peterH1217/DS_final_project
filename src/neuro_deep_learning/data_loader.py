@@ -7,7 +7,7 @@ import torch
 from torch.utils.data import Dataset
 from moabb.datasets import BNCI2014_001, Schirrmeister2017
 
-import config  # IMPORTANT: keep package import
+import neuro_deep_learning.config as config  # IMPORTANT: keep package import
 
 logger = logging.getLogger(__name__)
 
