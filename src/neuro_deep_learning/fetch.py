@@ -10,6 +10,40 @@ try:
 except AttributeError:
     pass
 
+
+def get_participants(dataset_name: str) -> list[int]:
+    if dataset_name == "BNCI2014_001":
+        ds = BNCI2014_001()
+        return ds.subject_list
+    elif dataset_name == "Schirrmeister2017":
+        ds = Schirrmeister2017()
+        return ds.subject_list
+    elif dataset_name == "PhysionetMI":
+        ds = PhysionetMI()
+        return ds.subject_list
+    else:
+        raise ValueError(f"Unknown dataset: {dataset_name}")
+
+
+def get_dataset_class_mapping(dataset_name: str) -> dict[int, str]:
+    """
+    Returns a dictionary mapping class number -> class name for the given dataset.
+    """
+    if dataset_name == "BNCI2014_001":
+        ds = BNCI2014_001()
+    elif dataset_name == "Schirrmeister2017":
+        ds = Schirrmeister2017()
+    elif dataset_name == "PhysionetMI":
+        ds = PhysionetMI()
+    else:
+        raise ValueError(f"Unknown dataset: {dataset_name}")
+
+    # Use event_id attribute, which exists in all three datasets
+    # return ds.event_id
+    mapping = {v: k for k, v in ds.event_id.items()}
+    return mapping
+
+
 def get_dataset(subject_id: int, dataset_name: str):
     """
     Fetch data for a specific subject. 
