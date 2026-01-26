@@ -34,3 +34,10 @@ mne_data/
 
 # Notebook Checkpoints
 .ipynb_checkpoints
+
+
+# Distribution / Install Artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
