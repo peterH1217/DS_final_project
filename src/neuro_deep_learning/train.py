@@ -1,6 +1,7 @@
 import logging
 import sys
 import argparse
+from xml.parsers.expat import model
 import numpy as np
 import torch
 import json
@@ -22,11 +23,11 @@ RESULTS_DIR.mkdir(exist_ok=True)
 # ---------------- Hyperparameters ----------------
 TRAIN_SIZE = 0.8
 N_EPOCHS = 300      # You can reduce this to 150-200 for faster Schirrmeister runs if needed
-STRIDE = 100        # Keep this small for high accuracy
+STRIDE = 50        # Keep this small for high accuracy
 
-PATIENCE = 50
+PATIENCE = 100  # Was 50
 CROP_SIZE = 500
-BATCH_SIZE = 64
+BATCH_SIZE = 16  # Was 64
 
 
 def run_epoch(model, loader, criterion, optimizer, device, is_train=True):
@@ -133,13 +134,10 @@ def process_dataset(dataset_name: str) -> None:
     # 1. DETERMINE SUBJECTS
     # If BNCI2014_001, we know there are 9 subjects.
     if dataset_name == 'BNCI2014_001':
-         subject_ids = list(range(1, 10)) # [1, 2, ..., 9]
+         subject_ids = [2] #list(range(1, 10)) if for all subjects
     else:
          # For Schirrmeister or Physionet, fetch list dynamically
          subject_ids = fetch.get_participants(dataset_name)
-
-    # --- DEBUG MODE: Uncomment below to run ONLY Subject 1 for testing ---
-    # subject_ids = [1] 
     
     grand_accuracies = []
 
@@ -182,7 +180,8 @@ def process_dataset(dataset_name: str) -> None:
         ).to(device)
 
         criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
+        # Find this line inside process_dataset
+        optimizer = optim.Adam(model.parameters(), lr=0.0005, weight_decay=1e-4) # Was 0.001
         early_stopper = EarlyStopping(patience=PATIENCE)
 
         # D. TRAINING LOOP

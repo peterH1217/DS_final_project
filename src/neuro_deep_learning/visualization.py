@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import mne
+import numpy as np
 import logging
 # import neuro_deep_learning.config as config  <-- Removed (unused)
 

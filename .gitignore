@@ -5,3 +5,32 @@ __pycache__/
 .DS_Store
 .ipynb_checkpoints/
 *.log
+
+
+# Python Junk
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Mac System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Project Data (Too big for GitHub)
+# Ignoring the raw EEG data folders so we don't accidentally push GBs of data
+data/
+mne_data/
+~/mne_data/
+
+# IDE Settings
+.vscode/
+.idea/
+
+# Notebook Checkpoints
+.ipynb_checkpoints
