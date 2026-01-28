@@ -23,6 +23,12 @@ dependencies = [
     "seaborn"
 ]
 
+# NEW: Development Dependencies (Required by Guidelines)
+[project.optional-dependencies]
+dev = [
+    "pytest"
+]
+
 # CRITICAL ADDITION FOR SRC LAYOUT
 [tool.setuptools]
 package-dir = {"" = "src"}
