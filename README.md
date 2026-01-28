@@ -1,52 +1,105 @@
-#Final_DS_Project
+# Neuro Deep Learning: DeepConvNet Replication
 
-# Neuro Deep Learning: Motor Imagery Classification
-
-Final project for the Advanced Python / Deep Learning Workshop.
-This repository implements the Deep ConvNet architecture (Schirrmeister et al., 2017) on the BCI Competition IV-2a dataset.
+> **Project Proposal:** Reproduction of Schirrmeister et al. (2017) "Deep learning with convolutional neural networks for EEG decoding and visualization".
 
 ## Team
 * **Helen:** Data Engineering & Preprocessing Pipeline
 * **Peter:** Trial Segmentation & Cropped Training Loop
 * **Margaret:** Deep ConvNet Architecture & Model Definition
 
-## Quick Start
+---
 
-### 1. Install Dependencies
-Run this command to install all required libraries:
+## Project Overview
+**Objective:** Reproduce the performance of the **Deep ConvNet** architecture on motor imagery EEG data using the "Cropped Training" strategy.
+**Hypothesis:** Using a sliding window (cropped) approach with a specialized CNN can achieve high accuracy on raw EEG data without complex feature engineering.
+
+---
+
+## Project Structure
+The project follows a standard `src` package layout:
+
+neuro_deep_learning/ 
+├── src/neuro_deep_learning/ # Main Package │ 
+├── config.py # Central configuration (Paths, Constants)│ ├── dataset.py # Preprocessing & Data Loading │ 
+├── fetch.py # Data acquisition (MOABB) │ 
+├── cnn.py # DeepConvNet Model Architecture │ 
+├── train.py # Training Loop & Validation │ 
+└── grand_average_*.py # Evaluation Scripts 
+├── tests/ # Unit Tests 
+├── results/ # Generated Artifacts │ 
+├── models/ # Saved .pth models │ 
+├── figures/ # Confusion matrices & PSD plots │ 
+└── grand_average/ # Final aggregate results 
+└── pyproject.toml # Dependencies & Build Config
+
+
+## Key Parameters & Configuration
+Configuration is centralized in `src/neuro_deep_learning/config.py`.
+
+* **Sampling Rate:** 250 Hz (Resampled to match paper).
+* **Filtering:** 4.0 Hz High-pass (removes EOG artifacts) to None (preserves Gamma band).
+* **Crop Size:** 500 samples (2 seconds).
+* **Stride:** 100 samples (Sliding window overlap).
+* **Normalization:** Channel-wise Z-score normalization.
+
+---
+
+## Data Description
+We use two benchmark Motor Imagery datasets via the **MOABB** library:
+
+1.  **BCI Competition IV-2a (BNCI2014_001):**
+    * 22 EEG channels, 9 subjects.
+    * 4 classes: Left Hand, Right Hand, Feet, Tongue.
+2.  **High Gamma Dataset (Schirrmeister2017):**
+    * up to 128 channels, 14 subjects.
+    * 4 classes: Left Hand, Right Hand, Feet, Rest.
+
+---
+
+## Usage Instructions
+
+### 1. Installation
+Install the package in editable mode with all dependencies:
 ```bash
-pip install mne moabb torch scikit-learn pandas matplotlib seaborn
+pip install -e .
+2. Run Training
+To train the model on a specific subject (e.g., Subject 1):
 
-```
+Bash
 
-### 2. Run the Data Pipeline
-To download the dataset (automatically handled via MOABB), filter, normalize, and visualize the data, run:
-```bash
-python -m src.test_run
-```
+# Runs the training pipeline defined in src/neuro_deep_learning/train.py
+python -m neuro_deep_learning.train
+3. Generate Results (Grand Average)
+To calculate the mean accuracy across all subjects and generate the final plots:
 
-### 3. Project structure:
-**src/dataset.py:** **Dynamic Loading:** Automatically switches between BCI 2a (22 channels) and HGD (128 channels). **Preprocessing:** Applies 4Hz High-pass filtering (preserving Gamma band up to 125Hz) and channel-wise Z-score normalization. **Segmentation:** Implements the Cropped Training logic (sliding windows) resulting in ~625 crops per trial.
+Bash
 
-**src/visualization.py:** Generates PSD (Power Spectral Density) plots to verify filtering. Plots Raw EEG Traces to verify normalization and signal quality. Saves outputs dynamically to results/ (e.g., psd_plot_Schirrmeister2017.png).
+# For BCI Competition IV-2a
+python -m neuro_deep_learning.grand_average_bnci
 
-**src/config.py:** Central configuration (Sampling Rate, Channel Names, Filter settings) that can be adjusted to one's liking. 
+# For High Gamma Dataset
+python -m neuro_deep_learning.grand_average_schirrmeister2017
+4. Run Tests
+Verify the integrity of the data pipeline and model architecture:
 
-**src/train.py:** The main script to run the pipeline and generate results.
+Bash
 
-**src/cnn.py:** Our DeepConvNet CNN model script.
+pytest
 
-**src/grand_average_bnci.py:** Loads saved .pth models for all 9 subjects of BNCI 2014-001 and calculates the mean accuracy.
+Pipeline Stages
+Data Import (fetch.py): Downloads datasets automatically using MOABB.
 
-**src/grand_average_schirrmeister.py:** Loads saved .pth models for all 14 subjects of the High Gamma Dataset and calculates the mean accuracy.
+Preprocessing (dataset.py): * Resampling to 250Hz.
 
-**Outputs (results/)**
-**models/:** Stores the saved PyTorch models (e.g., best_model_Schirrmeister2017_S1.pth).
+Bandpass filtering (4Hz - Inf).
 
-**figures/:** Stores generated Confusion Matrices and PSD plots.
+Z-score normalization.
 
-**logs/:** Contains training logs for reproducibility.
+Modeling (cnn.py): 4-layer DeepConvNet with MaxPolling and ELU activation.
 
-**validation_plots** Checking if pre-processing was carried out correctly. PSD plots to check High/Low-pass filtering is working and Raw EEG trace plots to observe channel-wise Z-score normalization.
+Analysis (grand_average_*.py): Aggregates subject accuracies and generates confusion matrices.
 
-**/grand_average:** Grand average output for both datasets.
+📚 References
+Schirrmeister, R. T., et al. (2017). Deep learning with convolutional neural networks for EEG decoding and visualization. Human Brain Mapping.
+
+MOABB: Mother of all BCI Benchmarks (Jayaram & Barachant, 2018).
