@@ -101,7 +101,8 @@ Bash
 pytest
 ```
 
-**##Pipeline Stages:**
+5. Pipeline Stages:
+
 **Data Import (fetch.py):** Downloads datasets automatically using MOABB.
 
 **Preprocessing (dataset.py):** Resampling to 250Hz Bandpass filtering (4Hz - Inf). Z-score normalization**
