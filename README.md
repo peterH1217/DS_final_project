@@ -26,10 +26,25 @@ python -m src.test_run
 ```
 
 ### 3. Project structure:
-**src/data_loader.py:** **Dynamic Loading:** Automatically switches between BCI 2a (22 channels) and HGD (128 channels). **Preprocessing:** Applies 4Hz High-pass filtering (preserving Gamma band up to 125Hz) and channel-wise Z-score normalization. **Segmentation:** Implements the Cropped Training logic (sliding windows) resulting in ~625 crops per trial.
+**src/dataset.py:** **Dynamic Loading:** Automatically switches between BCI 2a (22 channels) and HGD (128 channels). **Preprocessing:** Applies 4Hz High-pass filtering (preserving Gamma band up to 125Hz) and channel-wise Z-score normalization. **Segmentation:** Implements the Cropped Training logic (sliding windows) resulting in ~625 crops per trial.
 
 **src/visualization.py:** Generates PSD (Power Spectral Density) plots to verify filtering. Plots Raw EEG Traces to verify normalization and signal quality. Saves outputs dynamically to results/ (e.g., psd_plot_Schirrmeister2017.png).
 
 **src/config.py:** Central configuration (Sampling Rate, Channel Names, Filter settings) that can be adjusted to one's liking. 
 
-**src/test_run.py:** The main script to run the pipeline and generate results.
+**src/train.py:** The main script to run the pipeline and generate results.
+
+**src/cnn.py:** Our DeepConvNet CNN model script.
+
+**src/grand_average_bnci.py:** Loads saved .pth models for all 9 subjects of BNCI 2014-001 and calculates the mean accuracy.
+
+**src/grand_average_schirrmeister.py:** Loads saved .pth models for all 14 subjects of the High Gamma Dataset and calculates the mean accuracy.
+
+**Outputs (results/)**
+**models/:** Stores the saved PyTorch models (e.g., best_model_Schirrmeister2017_S1.pth).
+
+**figures/:** Stores generated Confusion Matrices and PSD plots.
+
+**logs/:** Contains training logs for reproducibility.
+
+**validation_plots** Checking if pre-processing was carried out correctly. PSD plots to check High/Low-pass filtering is working and Raw EEG trace plots to observe channel-wise Z-score normalization. 
