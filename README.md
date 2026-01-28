@@ -78,8 +78,10 @@ To train the model on a specific subject (e.g., Subject 1):
 python -m neuro_deep_learning.train
 ```
 
-# Runs the training pipeline defined in src/neuro_deep_learning/train.py
+Runs the training pipeline defined in src/neuro_deep_learning/train.py
+```
 python -m neuro_deep_learning.train
+```
 3. Generate Results (Grand Average)
 To calculate the mean accuracy across all subjects and generate the final plots:
 ```
@@ -99,14 +101,10 @@ Bash
 pytest
 ```
 
-**Pipeline Stages**
+**##Pipeline Stages:**
 **Data Import (fetch.py):** Downloads datasets automatically using MOABB.
 
-**Preprocessing (dataset.py):** Resampling to 250Hz.
-
-**Bandpass filtering (4Hz - Inf).**
-
-**Z-score normalization**
+**Preprocessing (dataset.py):** Resampling to 250Hz Bandpass filtering (4Hz - Inf). Z-score normalization**
 
 **Modeling (cnn.py):** 4-layer DeepConvNet with MaxPolling and ELU activation.
 
