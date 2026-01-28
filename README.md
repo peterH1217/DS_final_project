@@ -15,7 +15,7 @@
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 The project follows a standard `src` package layout:
 
 ```text
@@ -37,6 +37,7 @@ neuro_deep_learning/
 ├── pyproject.toml             # Dependencies & Build Config
 └── README.md                  # Project Documentation
 
+```
 
 ## Key Parameters & Configuration
 Configuration is centralized in `src/neuro_deep_learning/config.py`.
@@ -67,16 +68,21 @@ We use two benchmark Motor Imagery datasets via the **MOABB** library:
 Install the package in editable mode with all dependencies:
 ```bash
 pip install -e .
+
+```
+
 2. Run Training
 To train the model on a specific subject (e.g., Subject 1):
 
-Bash
+```bash
+python -m neuro_deep_learning.train
+```
 
 # Runs the training pipeline defined in src/neuro_deep_learning/train.py
 python -m neuro_deep_learning.train
 3. Generate Results (Grand Average)
 To calculate the mean accuracy across all subjects and generate the final plots:
-
+```
 Bash
 
 # For BCI Competition IV-2a
@@ -84,14 +90,16 @@ python -m neuro_deep_learning.grand_average_bnci
 
 # For High Gamma Dataset
 python -m neuro_deep_learning.grand_average_schirrmeister2017
+```
 4. Run Tests
 Verify the integrity of the data pipeline and model architecture:
-
+```
 Bash
 
 pytest
+```
 
-Pipeline Stages
+**Pipeline Stages**
 Data Import (fetch.py): Downloads datasets automatically using MOABB.
 
 Preprocessing (dataset.py): * Resampling to 250Hz.
@@ -104,7 +112,7 @@ Modeling (cnn.py): 4-layer DeepConvNet with MaxPolling and ELU activation.
 
 Analysis (grand_average_*.py): Aggregates subject accuracies and generates confusion matrices.
 
-📚 References
+**References**
 Schirrmeister, R. T., et al. (2017). Deep learning with convolutional neural networks for EEG decoding and visualization. Human Brain Mapping.
 
 MOABB: Mother of all BCI Benchmarks (Jayaram & Barachant, 2018).
