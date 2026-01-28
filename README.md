@@ -15,22 +15,27 @@
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 The project follows a standard `src` package layout:
 
-neuro_deep_learning/ 
-├── src/neuro_deep_learning/ # Main Package │ 
-├── config.py # Central configuration (Paths, Constants)│ ├── dataset.py # Preprocessing & Data Loading │ 
-├── fetch.py # Data acquisition (MOABB) │ 
-├── cnn.py # DeepConvNet Model Architecture │ 
-├── train.py # Training Loop & Validation │ 
-└── grand_average_*.py # Evaluation Scripts 
-├── tests/ # Unit Tests 
-├── results/ # Generated Artifacts │ 
-├── models/ # Saved .pth models │ 
-├── figures/ # Confusion matrices & PSD plots │ 
-└── grand_average/ # Final aggregate results 
-└── pyproject.toml # Dependencies & Build Config
+```text
+neuro_deep_learning/
+├── src/neuro_deep_learning/   # Main Package
+│   ├── config.py              # Central configuration (Paths, Constants)
+│   ├── dataset.py             # Preprocessing & Data Loading
+│   ├── fetch.py               # Data acquisition (MOABB)
+│   ├── cnn.py                 # DeepConvNet Model Architecture
+│   ├── train.py               # Training Loop & Validation
+│   ├── visualization.py       # Plotting helpers (PSD, Traces)
+│   ├── logger.py              # Centralized logging setup
+│   └── grand_average_*.py     # Evaluation Scripts
+├── tests/                     # Unit Tests
+├── results/                   # Generated Artifacts
+│   ├── models/                # Saved .pth models
+│   ├── figures/               # Confusion matrices & PSD plots
+│   └── grand_average/         # Final aggregate results
+├── pyproject.toml             # Dependencies & Build Config
+└── README.md                  # Project Documentation
 
 
 ## Key Parameters & Configuration
