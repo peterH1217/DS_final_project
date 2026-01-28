@@ -64,5 +64,4 @@ save_path = SAVE_DIR / f"grand_average_{dataset_name}.png"
 plt.savefig(save_path, dpi=300)
 print(f"Plot saved to: {save_path}")
 
-# plt.show() # Optional: Uncomment to pop up the window
 

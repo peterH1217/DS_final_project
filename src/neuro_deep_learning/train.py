@@ -145,9 +145,9 @@ def process_dataset(dataset_name: str) -> None:
 
     # 2. MAIN LOOP: ONE SUBJECT AT A TIME (Replication Standard)
     for subject_id in subject_ids:
-        print(f"\n" + "="*50)
+       
         print(f"  TRAINING SUBJECT {subject_id} of {len(subject_ids)}")
-        print(f"="*50)
+      
 
         # A. LOAD DATA (Specific to this subject)
         raw_train, raw_test = fetch.get_dataset(subject_id=subject_id, dataset_name=dataset_name)
@@ -240,11 +240,9 @@ def process_dataset(dataset_name: str) -> None:
 
     # 3. GRAND AVERAGE REPORT
     avg_acc = np.mean(grand_accuracies)
-    print("\n" + "="*50)
     print(f"REPLICATION COMPLETE: {dataset_name}")
     print(f"Grand Average Accuracy: {avg_acc:.2f}%")
     print(f"Individual Scores: {grand_accuracies}")
-    print("="*50)
 
 
 def main() -> None:

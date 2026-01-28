@@ -12,14 +12,14 @@ sys.path.append('src')
 # CONFIGURATION
 dataset_name = "BNCI2014_001"      
 subject_ids = list(range(1, 10))  
-STRIDE = 100  # Note: Standard testing often uses 500 (non-overlapping), but 100 is fine if consistent.
+STRIDE = 100  
 CROP_SIZE = 500
 
 
 # Setup Directories
 RESULTS_DIR = Path("results")
 SAVE_DIR = RESULTS_DIR / "grand_average"
-SAVE_DIR.mkdir(parents=True, exist_ok=True)  # <--- NEW: Create folder if missing
+SAVE_DIR.mkdir(parents=True, exist_ok=True)  # NEW: Creating folder if missing
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 accuracies = []
@@ -57,13 +57,12 @@ for subject_id in subject_ids:
     found_subjects.append(f'S{subject_id}')
     print(f"Subject {subject_id}: {acc:.2f}%")
 
-print("="*30)
 
 if len(accuracies) > 0:
     grand_avg = np.mean(accuracies)
-    print(f"🏆 {dataset_name} GRAND AVERAGE: {grand_avg:.2f}%")
+    print(f" {dataset_name} GRAND AVERAGE: {grand_avg:.2f}%")
     
-    # --- PLOTTING SECTION (Updated to use real data) ---
+    # PLOTTING SECTION (Updated to use real data)
     plt.figure(figsize=(10, 6))
     
     # Use the dynamic lists 'found_subjects' and 'accuracies'
@@ -83,12 +82,11 @@ if len(accuracies) > 0:
                  f'{height:.1f}%', ha='center', va='bottom')
     plt.tight_layout()
     
-    # SAVE THE FIGURE
+    # SAVING THE FIGURE
     save_path = SAVE_DIR / f"grand_average_{dataset_name}.png"
     plt.savefig(save_path)
     print(f"Plot saved to: {save_path}")
     
-    # plt.show() # Optional: Comment out if running on a server without a screen
 else:
     print("No models found! Check your 'results/models' path.")
 

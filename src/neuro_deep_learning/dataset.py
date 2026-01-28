@@ -94,7 +94,7 @@ def remove_artifact_trials(X, y, threshold_std=20):
     logger.info(f"Artifact Removal: Keeping {np.sum(keep_mask)}/{len(keep_mask)} trials")
     return X[keep_mask], y[keep_mask]
 
-# --- The "Memory-Safe" Class (Crucial for HGD) ---
+# The "Memory-Safe" Class (Crucial for HGD)
 class CropsDataset(Dataset):
     """
     PyTorch Dataset that generates crops on-the-fly.

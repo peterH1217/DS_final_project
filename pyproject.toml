@@ -1,11 +1,12 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "neuro_deep_learning"
 version = "0.1.0"
 description = "Reproduction of Schirrmeister et al. (2017) Deep ConvNet for EEG"
+requires-python = ">=3.8"
 authors = [
     {name = "Peter"},
     {name = "Margaret"},
@@ -21,3 +22,10 @@ dependencies = [
     "matplotlib",
     "seaborn"
 ]
+
+# CRITICAL ADDITION FOR SRC LAYOUT
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -5,7 +5,7 @@ from moabb.datasets import BNCI2014_001, Schirrmeister2017, PhysionetMI
 from neuro_deep_learning.logger import logger
 from mne import concatenate_raws
 
-# --- SSL Hack ---
+# SSL Hack
 try:
     ssl._create_default_https_context = ssl._create_unverified_context
 except AttributeError:
@@ -65,10 +65,10 @@ def get_dataset(subject_id: int, dataset_name: str):
     session_name = list(subject_data.keys())[0] # Usually 'session_0'
     runs = subject_data[session_name]
 
-    # --- FIX FOR LEAKAGE ---
+    # FIX FOR LEAKAGE
     if dataset_name == 'Schirrmeister2017':
         # MOABB usually labels them as 'train' and 'test' or '0' and '1'
-        # Let's verify keys to be safe, but typically:
+        # We verify keys to be safe, but typically:
         if 'train' in runs and 'test' in runs:
             raw_train = runs['train']
             raw_test = runs['test']
@@ -85,7 +85,7 @@ def get_dataset(subject_id: int, dataset_name: str):
             raw_test = runs[run_keys[1]]
             
     else:
-        # Keep your old logic for BNCI (which has 2 sessions)
+        # Keeping my old logic for BNCI (which has 2 sessions)
         session_names = list(subject_data.keys())
         if len(session_names) > 1:
             # True 2-session dataset (like BNCI)
@@ -96,9 +96,9 @@ def get_dataset(subject_id: int, dataset_name: str):
             raw_test  = concatenate_raws([runs_test[r] for r in runs_test])
         else:
             # Fallback for other 1-session datasets (like Physionet)
-            # You should split by run index manually here too
+            # We should split by run index manually here too
             runs_all = [runs[r] for r in runs]
-            raw_train = concatenate_raws(runs_all[:-1]) # Use all except last run
-            raw_test = runs_all[-1] # Use last run for test
+            raw_train = concatenate_raws(runs_all[:-1]) # Using all except last run
+            raw_test = runs_all[-1] # Using last run for test
 
     return raw_train, raw_test
